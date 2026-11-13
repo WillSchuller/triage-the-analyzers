@@ -7,4 +7,63 @@
 
      Unlike the baseline, this file may grow, but every entry is a reviewed decision. -->
 <FindBugsFilter>
+
+  <!-- D1 (EI_EXPOSE_REP, EI_EXPOSE_REP2): narrowed. The rule is off only where sharing a mutable
+       object is the design, and enforced everywhere else, where an exposed internal is a bug
+       (e.g. a cached object handing out its own list).
+
+       D1a. JPA entities. Hibernate hands out its own tracked collections (PersistentBag/Set) and
+       entity references, and detects changes through them. Returning or storing a copy would make
+       changes made through the getter silently not persist and would break lazy loading.
+       Listed explicitly (every @Entity class as of 2026-11-13); add a new entity here when it is created. -->
+  <Match>
+    <Or>
+      <Class name="team.projectpulse.activity.Activity"/>
+      <Class name="team.projectpulse.course.Course"/>
+      <Class name="team.projectpulse.evaluation.PeerEvaluation"/>
+      <Class name="team.projectpulse.evaluation.Rating"/>
+      <Class name="team.projectpulse.instructor.Instructor"/>
+      <Class name="team.projectpulse.ram.collaboration.Comment"/>
+      <Class name="team.projectpulse.ram.collaboration.CommentThread"/>
+      <Class name="team.projectpulse.ram.document.DocumentSection"/>
+      <Class name="team.projectpulse.ram.document.DocumentSectionLock"/>
+      <Class name="team.projectpulse.ram.document.RequirementDocument"/>
+      <Class name="team.projectpulse.ram.requirement.ArtifactKeySequence"/>
+      <Class name="team.projectpulse.ram.requirement.ArtifactLink"/>
+      <Class name="team.projectpulse.ram.requirement.RequirementArtifact"/>
+      <Class name="team.projectpulse.ram.usecase.UseCase"/>
+      <Class name="team.projectpulse.ram.usecase.UseCaseExtension"/>
+      <Class name="team.projectpulse.ram.usecase.UseCaseExtensionStep"/>
+      <Class name="team.projectpulse.ram.usecase.UseCaseLock"/>
+      <Class name="team.projectpulse.ram.usecase.UseCaseMainStep"/>
+      <Class name="team.projectpulse.rubric.Criterion"/>
+      <Class name="team.projectpulse.rubric.Rubric"/>
+      <Class name="team.projectpulse.section.Section"/>
+      <Class name="team.projectpulse.student.Student"/>
+      <Class name="team.projectpulse.team.Team"/>
+      <Class name="team.projectpulse.user.PeerEvaluationUser"/>
+      <Class name="team.projectpulse.user.resetpassword.ResetPasswordToken"/>
+      <Class name="team.projectpulse.user.userinvitation.UserInvitation"/>
+    </Or>
+    <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+  </Match>
+
+  <!-- D1b. Spring beans storing injected dependencies. Controllers, services, the scheduler and the
+       seed initializer receive singleton collaborators through their constructors; sharing that one
+       instance is what dependency injection is for. Only the constructor (EI_EXPOSE_REP2) is exempt:
+       a bean that hands out its own state through a getter is still flagged. -->
+  <Match>
+    <Class name="~team\.projectpulse\..*(Controller|Service|Scheduler|DataInitializer)"/>
+    <Method name="&lt;init&gt;"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <!-- D1c. DTOs (*.dto packages). Each is built for a single request, serialized to JSON by Jackson
+       and discarded; no component keeps a reference to one, so no shared state can be changed
+       through it. -->
+  <Match>
+    <Class name="~team\.projectpulse\..*\.dto\..*"/>
+    <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+  </Match>
+
 </FindBugsFilter>
