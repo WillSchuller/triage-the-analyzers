@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.DayOfWeek;
-import java.time.LocalTime;
 import java.util.List;
 
 public record SectionDto(Integer sectionId,

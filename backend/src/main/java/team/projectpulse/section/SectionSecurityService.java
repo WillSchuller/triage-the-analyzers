@@ -75,7 +75,7 @@ public class SectionSecurityService {
         boolean hasInstructorRole = this.userUtils.hasRole("ROLE_instructor");
         if (hasStudentRole) {
             Student student = this.studentRepository.findById(userIdFromJwt).orElse(null);
-            if (student == null) {
+            if (student == null) { // NOPMD - early return false when unresolved, the convention every check in this *SecurityService follows
                 return false;
             }
             // Check if the student's sectionId matches the sectionId from the request URI

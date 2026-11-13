@@ -2,11 +2,17 @@ package team.projectpulse.section;
 
 import org.springframework.data.jpa.domain.Specification;
 
-public class SectionSpecs {
+import java.util.Locale;
+
+public final class SectionSpecs {
+
+    private SectionSpecs() {
+        // Static Specification factories only; never instantiated.
+    }
 
     public static Specification<Section> containsSectionName(String providedSectionName) {
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.like(criteriaBuilder.lower(root.get("sectionName")), "%" + providedSectionName.toLowerCase() + "%");
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("sectionName")), "%" + providedSectionName.toLowerCase(Locale.ROOT) + "%");
     }
 
     public static Specification<Section> belongsToCourse(Integer courseId) {
