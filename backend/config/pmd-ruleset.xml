@@ -23,5 +23,10 @@
              The other half of D2, UnnecessaryConstructor, stays enforced: an empty no-arg constructor
              that is a class's only constructor is the one Java generates anyway, so it can be deleted. -->
         <exclude name="UncommentedEmptyConstructor"/>
+        <!-- D3: ControlStatementBraces stays enforced (no exclude). Its findings are one-line guard
+             clauses, several in security- and lock-sensitive code (UserUtils resolves the caller's id
+             and role; DocumentSectionLock and UseCaseLock decide whether an edit lease has lapsed).
+             A line later added under a brace-less guard silently runs unconditionally, and the rest of
+             the codebase already braces every block, so the fix is mechanical and matches house style. -->
     </rule>
 </ruleset>
