@@ -4,7 +4,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.Locale;
 
-public class SectionSpecs {
+public final class SectionSpecs {
 
     private SectionSpecs() {
         // Static Specification factories only; never instantiated.
