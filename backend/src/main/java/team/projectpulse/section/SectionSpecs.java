@@ -2,11 +2,13 @@ package team.projectpulse.section;
 
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.Locale;
+
 public class SectionSpecs {
 
     public static Specification<Section> containsSectionName(String providedSectionName) {
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.like(criteriaBuilder.lower(root.get("sectionName")), "%" + providedSectionName.toLowerCase() + "%");
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("sectionName")), "%" + providedSectionName.toLowerCase(Locale.ROOT) + "%");
     }
 
     public static Specification<Section> belongsToCourse(Integer courseId) {
