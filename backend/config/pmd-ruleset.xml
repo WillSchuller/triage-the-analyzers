@@ -13,5 +13,15 @@
          xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
     <description>PMD quickstart, with Project Pulse's decisions.</description>
     <rule ref="rulesets/java/quickstart.xml">
+        <!-- D2: UncommentedEmptyConstructor is off. The rule asks for a comment so an empty constructor
+             is not mistaken for unfinished work. In Project Pulse 26 of its 30 findings are JPA entities,
+             where the spec requires a no-arg constructor (Hibernate instantiates through it, then sets
+             the fields), so an empty body is the expected shape and a comment in each adds nothing.
+             Of the other four, PeerEvaluationAverage and WeeklyPeerEvaluationReport lose the constructor
+             under UnnecessaryConstructor below; Result and RatingAverage keep an unused no-arg
+             constructor, which is a dead-code question, not a missing-comment one.
+             The other half of D2, UnnecessaryConstructor, stays enforced: an empty no-arg constructor
+             that is a class's only constructor is the one Java generates anyway, so it can be deleted. -->
+        <exclude name="UncommentedEmptyConstructor"/>
     </rule>
 </ruleset>
