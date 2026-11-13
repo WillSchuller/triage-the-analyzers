@@ -28,5 +28,13 @@
              and role; DocumentSectionLock and UseCaseLock decide whether an edit lease has lapsed).
              A line later added under a brace-less guard silently runs unconditionally, and the rest of
              the codebase already braces every block, so the fix is mechanical and matches house style. -->
+        <!-- D4: GuardLogStatement is off. A guard only saves evaluating a log call's arguments when its
+             level is disabled. All Project Pulse logging goes through SLF4J with {} placeholders and no
+             string concatenation, so no message is built unless the level is on, and the flagged
+             arguments are plain getters and size() calls. One of the four findings
+             (ReminderService) is an error-level log in a catch block, which is always on, so a guard
+             there could never skip anything. Accepted trade-off: a future expensive argument
+             (e.g. toJson() in a debug log) will not be flagged by this rule. -->
+        <exclude name="GuardLogStatement"/>
     </rule>
 </ruleset>
